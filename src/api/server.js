@@ -49,7 +49,6 @@ module.exports = (client) => {
   });
 
 	
-
   // Minecraft player list
   app.get("/players", async (req, res) => {
     const fetch = require("axios");
