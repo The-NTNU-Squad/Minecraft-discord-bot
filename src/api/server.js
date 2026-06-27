@@ -4,6 +4,12 @@ module.exports = (client) => {
   const app = express();
   app.use(express.json());
 
+  app.use((req, res, next) => {
+  if (req.get("X-Auth-Token") !== process.env.BOT_API_TOKEN) {
+    return res.sendStatus(401);
+  }
+  next();
+
   // Minecraft → Discord chat
   app.post("/mc-chat", (req, res) => {
     const { player, message } = req.body;
@@ -13,10 +19,12 @@ module.exports = (client) => {
     );
 
     if (channel) {
-      channel.send(`⛏️ **${player}**: ${message}`);
+      channel.send(` **${player}**: ${message}`);
     }
 
     res.sendStatus(200);
+
+    });
   });
 
   // Minecraft server log → #serverlog 頻道
