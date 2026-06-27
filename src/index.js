@@ -5,6 +5,13 @@ const path = require("path");
 
 dotenv.config();
 
+const required = ["DISCORD_TOKEN", "PAPER_API", "BOT_API_TOKEN"];
+const missing = required.filter(k => !process.env[k]);
+if (missing.length) {
+  console.error(`Missing required env variables: ${missing.join(", ")}`);
+  process.exit(1);
+}
+
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
