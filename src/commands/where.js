@@ -26,7 +26,11 @@ module.exports = {
         `X: ${data.x}\nY: ${data.y}\nZ: ${data.z}`
       );
     } catch (err) {
-      await interaction.editReply("找不到該玩家");
+      if (err.response?.status === 404) {
+        return interaction.editReply("找不到該玩家");
+      }
+      console.error("where command error:", err.message);
+      return interaction.editReply("無法連線到伺服器，請稍後再試");
     }
   }
 };
