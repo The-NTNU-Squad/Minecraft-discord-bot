@@ -47,16 +47,13 @@ module.exports = (client) => {
     try {
       // 下載並縮放圖片為 128x128
       const image = await Jimp.fromURL(attachment.url);
-      image.resize({ w: 128, h: 128 });;
+      image.resize({ w: 128, h: 128 });
 
       // 轉換每個像素為地圖色彩 index
       const pixels = [];
       for (let y = 0; y < 128; y++) {
         for (let x = 0; x < 128; x++) {
-          const hex = image.getPixelColor(x, y);
-          const r = (hex >> 24) & 0xff;
-          const g = (hex >> 16) & 0xff;
-          const b = (hex >> 8) & 0xff;
+          const { r, g, b } = image.getPixelColor(x, y);  // ✅ v1 回傳物件
           pixels.push(nearestColorIndex(r, g, b));
         }
       }
