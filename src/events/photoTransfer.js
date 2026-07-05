@@ -14,7 +14,6 @@ const MAP_COLORS = [
   [74, 128, 255], [0, 217, 58], [129, 86, 49], [112, 2, 0],
 ];
 
-// 找最接近的地圖色彩 index
 function nearestColorIndex(r, g, b) {
   let minDist = Infinity;
   let index = 0;
@@ -26,12 +25,11 @@ function nearestColorIndex(r, g, b) {
       index = i;
     }
   }
-  return index + 4; // Minecraft 地圖色彩從 index 4 開始
+  return index + 4;
 }
 
 module.exports = (client) => {
   client.on("messageCreate", async (message) => {
-    // 只處理 #phototransfer 頻道
     if (message.channel.name !== "phototransfer") return;
     if (message.author.bot) return;
     if (message.attachments.size === 0) return;
@@ -45,15 +43,19 @@ module.exports = (client) => {
     await message.reply("⏳ 正在處理圖片，請稍後...");
 
     try {
-      // 下載並縮放圖片為 128x128
-      const image = await Jimp.fromURL(attachment.url);
+      // 下載圖片
+      const response = await axios.get(attachment.url, { responseType: "arraybuffer" });
+      const buffer = Buffer.from(response.data);
+
+      // 用 buffer 載入並縮放
+      const image = await Jimp.fromBuffer(buffer);
       image.resize({ w: 128, h: 128 });
 
       // 轉換每個像素為地圖色彩 index
       const pixels = [];
       for (let y = 0; y < 128; y++) {
         for (let x = 0; x < 128; x++) {
-          const { r, g, b } = image.getPixelColor(x, y);  // ✅ v1 回傳物件
+          const { r, g, b } = image.getPixelColor(x, y);
           pixels.push(nearestColorIndex(r, g, b));
         }
       }
