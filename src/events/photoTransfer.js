@@ -46,8 +46,8 @@ module.exports = (client) => {
 
     try {
       // 下載並縮放圖片為 128x128
-      const image = await Jimp.read(attachment.url);
-      image.resize(128, 128);
+      const image = await Jimp.fromURL(attachment.url);
+      image.resize({ w: 128, h: 128 });;
 
       // 轉換每個像素為地圖色彩 index
       const pixels = [];
