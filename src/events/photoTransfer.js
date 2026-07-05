@@ -1,4 +1,4 @@
-const Jimp = require("jimp");
+const { Jimp } = require("jimp");
 const axios = require("axios");
 
 // Minecraft 地圖色彩表（144 種）
