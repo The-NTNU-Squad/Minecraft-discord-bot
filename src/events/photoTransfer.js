@@ -55,7 +55,10 @@ module.exports = (client) => {
       const pixels = [];
       for (let y = 0; y < 128; y++) {
         for (let x = 0; x < 128; x++) {
-          const { r, g, b } = image.getPixelColor(x, y);
+          const hex = image.getPixelColor(x, y);
+          const r = (hex >>> 24) & 0xff;
+          const g = (hex >>> 16) & 0xff;
+          const b = (hex >>> 8) & 0xff;
           pixels.push(nearestColorIndex(r, g, b));
         }
       }
