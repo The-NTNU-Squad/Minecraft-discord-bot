@@ -40,7 +40,6 @@ for (const file of commandFiles) {
 // events
 require("./events/messageCreate")(client);
 require("./events/interactionCreate")(client);
-require("./events/photoTransfer")(client);
 
 // HTTP API（Minecraft → Discord）
 require("./api/server")(client);
