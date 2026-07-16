@@ -13,7 +13,7 @@ if (missing.length) {
 }
 
 const commands = [];
-const commandsPath = path.join(__dirname, "commands");
+const commandsPath = path.join(__dirname, "src/commands");
 const commandFiles = fs
   .readdirSync(commandsPath)
   .filter(f => f.endsWith(".js"));

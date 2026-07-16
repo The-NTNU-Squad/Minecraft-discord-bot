@@ -1,26 +1,37 @@
+const { SlashCommandBuilder, MessageFlags } = require("discord.js");
 const axios = require("axios");
 
 module.exports = {
-  name: "bind",
-  async execute(message, args) {
-    const token = args[0];
-
-    if (!token) {
-      return message.reply("請提供你的 token，例如：`!bind <token>`");
-    }
+  data: new SlashCommandBuilder()
+    .setName("bind")
+    .setDescription("綁定你的網站帳號到 Discord")
+    .addStringOption(option =>
+      option
+        .setName("token")
+        .setDescription("你的帳號 token")
+        .setRequired(true)
+    ),
+  async execute(interaction) {
+    const token = interaction.options.getString("token");
+    const discordId = interaction.user.id;
 
     try {
       const res = await axios.post(`${process.env.BACKEND_URL}/api/bind/discord`, {
-        token: token,
-        discord_id: message.author.id
+        token,
+        discord_id: discordId
       });
-      message.reply(`✅ ${res.data.message}`);
+      await interaction.reply({
+        content: `✅ ${res.data.message}`,
+        flags: MessageFlags.Ephemeral
+      });
     } catch (err) {
-      if (err.response?.status === 401) {
-        message.reply("❌ token 無效，請確認你的 token 是否正確。");
-      } else {
-        message.reply("❌ 綁定失敗，請稍後再試。");
-      }
+      const msg = err.response?.status === 401
+        ? "❌ token 無效，請確認是否正確。"
+        : "❌ 綁定失敗，請稍後再試。";
+      await interaction.reply({
+        content: msg,
+        flags: MessageFlags.Ephemeral
+      });
     }
   }
 };
