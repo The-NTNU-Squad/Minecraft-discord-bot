@@ -17,6 +17,15 @@ module.exports = (client) => {
     next();
   });
 
+  app.get("/discord-user/:id", (req, res) => {
+    const user = client.users.cache.get(req.params.id);
+    if (user) {
+      res.json({ username: user.username });
+    } else {
+      res.status(404).json({ error: "not found" });
+    }
+  });
+
   // Minecraft → Discord chat
   app.post("/mc-chat", (req, res) => {
     const { player, message } = req.body;
