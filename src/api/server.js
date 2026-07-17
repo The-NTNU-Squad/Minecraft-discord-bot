@@ -17,11 +17,11 @@ module.exports = (client) => {
     next();
   });
 
-  app.get("/discord-user/:id", (req, res) => {
-    const user = client.users.cache.get(req.params.id);
-    if (user) {
+  app.get("/discord-user/:id", async (req, res) => {
+    try {
+      const user = await client.users.fetch(req.params.id);
       res.json({ username: user.username });
-    } else {
+    } catch (err) {
       res.status(404).json({ error: "not found" });
     }
   });
